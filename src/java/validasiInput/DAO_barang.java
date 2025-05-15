@@ -3,15 +3,19 @@ package validasiInput;
 import java.sql.*;
 import java.util.ArrayList;
 import koneksi.Database;
+import java.text.*;
 
 public class DAO_barang {
     Connection conn = Database.KoneksiDB();
-
     String INSERT = "INSERT INTO barang (id,nama_barang,tanggal_pembelian,jumlah,harga_satuan,vendor,tanggal_garansi,jenis_garansi,penanggung_jawab) VALUES (?,?,?,?,?,?,?,?,?)";
     String UPDATE = "UPDATE barang SET nama_barang=?,tanggal_pembelian=?,jumlah=?,harga_satuan=?,vendor=?,tanggal_garansi=?,jenis_garansi=?,penanggung_jawab=? WHERE id=?";
     String SELECT = "SELECT * FROM barang WHERE id LIKE ?";
     String DELETE = "DELETE FROM barang WHERE id = ?";
     String ALL = "SELECT * FROM barang";
+
+    SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat show = new SimpleDateFormat("dd-MM-yyyy");
+    SimpleDateFormat timestamps = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void insert(barang object) {
         try {
@@ -89,7 +93,7 @@ public class DAO_barang {
                 objBarang.setTanggal_garansi(rs.getDate("tanggal_garansi"));
                 objBarang.setJenis_garansi(rs.getString("jenis_garansi"));
                 objBarang.setPenanggung_jawab(rs.getString("penanggung_jawab"));
-                objBarang.setCreated_at(rs.getDate("created_at"));
+                objBarang.setCreated_at(rs.getTimestamp("created_at"));
                 list.add(objBarang);
             }
             st.close();
@@ -115,7 +119,7 @@ public class DAO_barang {
                 objBarang.setTanggal_garansi(rs.getDate("tanggal_garansi"));
                 objBarang.setJenis_garansi(rs.getString("jenis_garansi"));
                 objBarang.setPenanggung_jawab(rs.getString("penanggung_jawab"));
-                objBarang.setCreated_at(rs.getDate("created_at"));
+                objBarang.setCreated_at(rs.getTimestamp("created_at"));
                 list.add(objBarang);
             }
             st.close();

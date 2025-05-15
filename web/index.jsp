@@ -1,4 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="validasiInput.DAO_barang" %>
+<%@ page import="validasiInput.barang" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.text.*" %>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -112,6 +116,51 @@
     </style>
 </head>
 <body>
+        <%
+        DAO_barang model = new DAO_barang();
+        SimpleDateFormat sql = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat show = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat timestamps = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sql2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        String id="",nama_barang="",tanggal_pembelian="";
+        String jumlah="",harga_satuan="",vendor="",tanggal_garansi="";
+        String jenis_garansi="",penanggung_jawab="",total="";
+        try{
+            String pilihan = request.getParameter("submit");
+            if(!pilihan.equals(null)){
+                if(pilihan.equalsIgnoreCase("select") ){
+                    ArrayList<barang> listCari = model.getCari(request.getParameter("id"));
+                    for(barang item :listCari){
+                        id=item.getId();
+                        nama_barang=item.getNama_barang();
+                        tanggal_pembelian=show.format(sql.parse(item.getTanggal_pembelian().toString()));
+                        jumlah=String.valueOf(item.getJumlah());
+                        harga_satuan=String.valueOf(item.getHarga_satuan());
+                        vendor=item.getVendor();
+                        tanggal_garansi=show.format(sql.parse(item.getTanggal_garansi().toString()));;
+                        jenis_garansi=item.getJenis_garansi();
+                        penanggung_jawab=item.getPenanggung_jawab();
+
+                        DecimalFormat format = new DecimalFormat("###.##");
+                        total=String.valueOf(format.format(item.getHarga_satuan()*(float)item.getJumlah()));
+                    }
+                }
+                if(pilihan.equalsIgnoreCase("ubah")){
+
+                }
+                if(pilihan.equalsIgnoreCase("delete")){
+                    model.delete(request.getParameter("id"));
+                }
+            }
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        ArrayList<barang> list = model.ALL();
+        
+    %>
     <div class="container">
         <h2>Input Data Barang</h2>
         <form action="BarangController" method="post" id="formBarang">
@@ -120,33 +169,33 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="id" class="required">ID Barang</label>
-                    <input type="text" id="id" name="id" class="form-control" required>
+                    <input type="text" id="id" name="id" class="form-control" value="<%= id %>" required>
                 </div>
                 <div class="form-group">
                     <label for="nama_barang" class="required">Nama Barang</label>
-                    <input type="text" id="nama_barang" name="nama_barang" class="form-control" required>
+                    <input type="text" id="nama_barang" name="nama_barang" class="form-control" value="<%= nama_barang %>" required>
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="tanggal_pembelian" class="required">Tanggal Pembelian</label>
-                    <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" class="form-control" required>
+                    <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" class="form-control" value="<%= tanggal_pembelian %>" required>
                 </div>
                 <div class="form-group">
                     <label for="jumlah" class="required">Jumlah</label>
-                    <input type="number" id="jumlah" name="jumlah" class="form-control" required min="1" onchange="hitungTotal()">
+                    <input type="number" id="jumlah" name="jumlah" class="form-control" required min="1" onchange="hitungTotal()" value="<%= jumlah %>">
                 </div>
             </div>
             
             <div class="form-row">
                 <div class="form-group">
                     <label for="harga_satuan" class="required">Harga Satuan (Rp)</label>
-                    <input type="number" id="harga_satuan" name="harga_satuan" class="form-control" required min="0" onchange="hitungTotal()">
+                    <input type="number" id="harga_satuan" name="harga_satuan" class="form-control" required min="0" onchange="hitungTotal()" value="<%= harga_satuan %>">
                 </div>
                 <div class="form-group">
                     <label for="total_harga">Total Harga (Rp)</label>
-                    <input type="number" id="total_harga" name="total_harga" class="form-control" readonly>
+                    <input type="number" id="total_harga" name="total_harga" class="form-control" readonly value="<%=total%>">
                 </div>
             </div>
             
@@ -154,12 +203,12 @@
             <h4 class="section-title">Informasi Vendor</h4>
             <div class="form-group">
                 <label for="vendor">Vendor</label>
-                <input type="text" id="vendor" name="vendor" class="form-control">
+                <input type="text" id="vendor" name="vendor" class="form-control" value="<%= vendor %>">
             </div>
             
             <div class="form-group">
                 <label for="penanggung_jawab">Penanggung Jawab</label>
-                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="form-control">
+                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="form-control" value="<%= penanggung_jawab %>">
             </div>
             
             <!-- Informasi Garansi -->
@@ -167,11 +216,11 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="tanggal_garansi">Tanggal Garansi</label>
-                    <input type="date" id="tanggal_garansi" name="tanggal_garansi" class="form-control">
+                    <input type="date" id="tanggal_garansi" name="tanggal_garansi" class="form-control" value="<%= tanggal_garansi %>">
                 </div>
                 <div class="form-group">
                     <label for="jenis_garansi">Jenis Garansi</label>
-                    <input type="text" id="jenis_garansi" name="jenis_garansi" class="form-control">
+                    <input type="text" id="jenis_garansi" name="jenis_garansi" class="form-control" value="<%= jenis_garansi %>">
                 </div>
             </div>
             
@@ -180,7 +229,120 @@
             </div>
         </form>
     </div>
-
+        <table>
+            <thead>
+                <tr> 
+                    <th>No.</th>
+                    <th>Id</th>
+                    <th>Nama Barang</th>
+                    <th>Tanggal Pembelian</th>
+                    <th>Jumlah</th>
+                    <th>Harga Satuan</th>
+                    <th>Vendor</th>
+                    <th>Tanggal Garansi</th>
+                    <th>Jenis Garansi</th>
+                    <th>Penanggung Jawab</th>
+                    <th>Created_at</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                int i = 1;
+                for(barang item:list){
+                    %>
+                    <tr>
+                        <form method="POST" action="index.jsp" border="2" >
+                            <td>
+                                <%
+                                    out.println(String.valueOf(i));;
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(item.getId());
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(item.getNama_barang());
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    try{
+                                        Date parse = sql.parse(item.getTanggal_pembelian().toString());
+                                        out.println(show.format(parse));
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }                                    
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(String.valueOf(item.getJumlah()));
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(String.valueOf(item.getHarga_satuan()));
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(item.getVendor());
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    try{
+                                        Date parse = sql.parse(item.getTanggal_garansi().toString());
+                                        out.println(show.format(parse));
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(item.getJenis_garansi());
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    out.println(item.getPenanggung_jawab());
+                                %>
+                            </td>
+                            <td>
+                                <%
+                                    try{
+                                        Date parse = sql2.parse(item.getCreated_at().toString());
+                                        out.println(timestamps.format(parse));
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                    
+                                %>
+                            </td>
+                            <input type="hidden" value="<%= item.getId() %>" name="id">
+                            <td>
+                                <input type="submit" value="select" name="submit">
+                            </td>
+                            <td>
+                                <input type="submit" value="ubah" name="submit">
+                            </td>
+                            <td>
+                                <input type="submit" value="delete" name="submit">
+                            </td>
+                        </form>
+                    </tr>
+                    <%
+                    i++;
+                }
+                %>
+            </tbody>
+        </table>
+        <%
+    %>
     <script>
         // Set default tanggal pembelian ke hari ini
         document.addEventListener('DOMContentLoaded', function() {
