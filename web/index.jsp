@@ -1,0 +1,223 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input Barang</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .form-group input[type="number"] {
+            text-align: right;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Input Data Barang</h2>
+        <form action="BarangController" method="post" id="formBarang">
+            <!-- Informasi Utama Barang -->
+            <h4 class="section-title">Informasi Barang</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id" class="required">ID Barang</label>
+                    <input type="text" id="id" name="id" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="nama_barang" class="required">Nama Barang</label>
+                    <input type="text" id="nama_barang" name="nama_barang" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tanggal_pembelian" class="required">Tanggal Pembelian</label>
+                    <input type="date" id="tanggal_pembelian" name="tanggal_pembelian" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="jumlah" class="required">Jumlah</label>
+                    <input type="number" id="jumlah" name="jumlah" class="form-control" required min="1" onchange="hitungTotal()">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="harga_satuan" class="required">Harga Satuan (Rp)</label>
+                    <input type="number" id="harga_satuan" name="harga_satuan" class="form-control" required min="0" onchange="hitungTotal()">
+                </div>
+                <div class="form-group">
+                    <label for="total_harga">Total Harga (Rp)</label>
+                    <input type="number" id="total_harga" name="total_harga" class="form-control" readonly>
+                </div>
+            </div>
+            
+            <!-- Informasi Vendor dan Penanggung Jawab -->
+            <h4 class="section-title">Informasi Vendor</h4>
+            <div class="form-group">
+                <label for="vendor">Vendor</label>
+                <input type="text" id="vendor" name="vendor" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="penanggung_jawab">Penanggung Jawab</label>
+                <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="form-control">
+            </div>
+            
+            <!-- Informasi Garansi -->
+            <h4 class="section-title">Informasi Garansi</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tanggal_garansi">Tanggal Garansi</label>
+                    <input type="date" id="tanggal_garansi" name="tanggal_garansi" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="jenis_garansi">Jenis Garansi</label>
+                    <input type="text" id="jenis_garansi" name="jenis_garansi" class="form-control">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn">Simpan Data</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Set default tanggal pembelian ke hari ini
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggal_pembelian').value = today;
+            
+            // Set fokus ke ID Barang saat halaman dimuat
+            document.getElementById('id').focus();
+        });
+        
+        // Fungsi untuk menghitung total harga
+        function hitungTotal() {
+            const jumlah = document.getElementById('jumlah').value || 0;
+            const hargaSatuan = document.getElementById('harga_satuan').value || 0;
+            const totalHarga = jumlah * hargaSatuan;
+            document.getElementById('total_harga').value = totalHarga;
+        }
+        
+        // Validasi form sebelum submit
+        document.getElementById('formBarang').addEventListener('submit', function(event) {
+            const id = document.getElementById('id').value;
+            const namaBarang = document.getElementById('nama_barang').value;
+            
+            if (id.trim() === '') {
+                alert('ID Barang tidak boleh kosong!');
+                event.preventDefault();
+                return false;
+            }
+            
+            if (namaBarang.trim() === '') {
+                alert('Nama Barang tidak boleh kosong!');
+                event.preventDefault();
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+</body>
+</html>
