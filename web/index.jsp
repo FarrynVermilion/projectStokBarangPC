@@ -1,4 +1,11 @@
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="validasiInput.barang"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    DecimalFormat formatter = new DecimalFormat("#,###");
+    String message = (String) request.getAttribute("message");
+%>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -115,8 +122,7 @@
     <div class="container">
         <h2>Input Data Barang</h2>
         <form action="BarangController" method="post" id="formBarang">
-            <!-- Informasi Utama Barang -->
-            <h4 class="section-title">Informasi Barang</h4>
+            <input type="hidden" name="aksi" id="aksi" value="insert" />
             <div class="form-row">
                 <div class="form-group">
                     <label for="id" class="required">ID Barang</label>
@@ -127,7 +133,6 @@
                     <input type="text" id="nama_barang" name="nama_barang" class="form-control" required>
                 </div>
             </div>
-            
             <div class="form-row">
                 <div class="form-group">
                     <label for="tanggal_pembelian" class="required">Tanggal Pembelian</label>
@@ -138,7 +143,7 @@
                     <input type="number" id="jumlah" name="jumlah" class="form-control" required min="1" onchange="hitungTotal()">
                 </div>
             </div>
-            
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="harga_satuan" class="required">Harga Satuan (Rp)</label>
@@ -149,21 +154,17 @@
                     <input type="number" id="total_harga" name="total_harga" class="form-control" readonly>
                 </div>
             </div>
-            
-            <!-- Informasi Vendor dan Penanggung Jawab -->
-            <h4 class="section-title">Informasi Vendor</h4>
+
             <div class="form-group">
                 <label for="vendor">Vendor</label>
                 <input type="text" id="vendor" name="vendor" class="form-control">
             </div>
-            
+
             <div class="form-group">
                 <label for="penanggung_jawab">Penanggung Jawab</label>
                 <input type="text" id="penanggung_jawab" name="penanggung_jawab" class="form-control">
             </div>
-            
-            <!-- Informasi Garansi -->
-            <h4 class="section-title">Informasi Garansi</h4>
+
             <div class="form-row">
                 <div class="form-group">
                     <label for="tanggal_garansi">Tanggal Garansi</label>
@@ -174,50 +175,111 @@
                     <input type="text" id="jenis_garansi" name="jenis_garansi" class="form-control">
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <button type="submit" class="btn">Simpan Data</button>
             </div>
         </form>
+
+        <hr>
+
+        <button type="button" onclick="window.location.href='BarangController'">Lihat Semua Data</button>
+
+        <h3>Daftar Barang</h3>
+        <table border="1" cellpadding="5" cellspacing="0" width="100%">
+            <thead>
+                <tr style="background-color:#3498db; color:white;">
+                    <th>ID</th>
+                    <th>Nama Barang</th>
+                    <th>Tanggal Pembelian</th>
+                    <th>Jumlah</th>
+                    <th>Harga Satuan (Rp)</th>
+                    <th>Vendor</th>
+                    <th>Tanggal Garansi</th>
+                    <th>Jenis Garansi</th>
+                    <th>Penanggung Jawab</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            <%
+                ArrayList<barang> list = (ArrayList<barang>) request.getAttribute("dataBarang");
+                if (list != null && !list.isEmpty()) {
+                    for (barang b : list) {
+            %>
+                <tr>
+                    <td><%= b.getId() %></td>
+                    <td><%= b.getNama_barang() %></td>
+                    <td><%= b.getTanggal_pembelian() %></td>
+                    <td style="text-align:right;"><%= b.getJumlah() %></td>
+                    <td style="text-align:right;">Rp <%= formatter.format(b.getHarga_satuan()) %></td>
+                    <td><%= b.getVendor() != null ? b.getVendor() : "-" %></td>
+                    <td><%= b.getTanggal_garansi() != null ? b.getTanggal_garansi() : "-" %></td>
+                    <td><%= b.getJenis_garansi() != null ? b.getJenis_garansi() : "-" %></td>
+                    <td><%= b.getPenanggung_jawab() != null ? b.getPenanggung_jawab() : "-" %></td>
+                    <td>
+                        <button onclick="editBarang('<%=b.getId()%>', '<%=b.getNama_barang()%>', '<%=b.getTanggal_pembelian()%>', '<%=b.getJumlah()%>', '<%=b.getHarga_satuan()%>', '<%=b.getVendor()%>', '<%=b.getTanggal_garansi()%>', '<%=b.getJenis_garansi()%>', '<%=b.getPenanggung_jawab()%>')">Edit</button>
+                        <button onclick="deleteBarang('<%=b.getId()%>')">Hapus</button>
+                    </td>
+                </tr>
+            <%
+                    }
+                } else {
+            %>
+                <tr><td colspan="10" style="text-align:center;">Data kosong</td></tr>
+            <% } %>
+            </tbody>
+        </table>
     </div>
 
-    <script>
-        // Set default tanggal pembelian ke hari ini
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggal_pembelian').value = today;
-            
-            // Set fokus ke ID Barang saat halaman dimuat
-            document.getElementById('id').focus();
-        });
-        
-        // Fungsi untuk menghitung total harga
-        function hitungTotal() {
-            const jumlah = document.getElementById('jumlah').value || 0;
-            const hargaSatuan = document.getElementById('harga_satuan').value || 0;
-            const totalHarga = jumlah * hargaSatuan;
-            document.getElementById('total_harga').value = totalHarga;
+<script>
+    function hitungTotal() {
+        const jumlah = parseFloat(document.getElementById('jumlah').value || 0);
+        const hargaSatuan = parseFloat(document.getElementById('harga_satuan').value || 0);
+        const totalHarga = jumlah * hargaSatuan;
+        document.getElementById('total_harga').value = Math.round(totalHarga);
+    }
+
+    function editBarang(id, nama_barang, tanggal_pembelian, jumlah, harga_satuan, vendor, tanggal_garansi, jenis_garansi, penanggung_jawab) {
+        document.getElementById('id').value = id;
+        document.getElementById('id').readOnly = true;
+        document.getElementById('nama_barang').value = nama_barang;
+        document.getElementById('tanggal_pembelian').value = tanggal_pembelian ? tanggal_pembelian.split(' ')[0] : "";
+        document.getElementById('jumlah').value = jumlah;
+        document.getElementById('harga_satuan').value = harga_satuan;
+        document.getElementById('vendor').value = vendor || "";
+        document.getElementById('tanggal_garansi').value = tanggal_garansi && tanggal_garansi !== "null" ? tanggal_garansi.split(' ')[0] : "";
+        document.getElementById('jenis_garansi').value = jenis_garansi || "";
+        const radios = document.getElementsByName('jenis_garansi');
+        radios.forEach(r => r.checked = (r.value === jenis_garansi));
+        document.getElementById('penanggung_jawab').value = penanggung_jawab || "";
+        hitungTotal();
+        document.getElementById('aksi').value = 'update';
+    }
+
+    function deleteBarang(id) {
+        if (confirm("Yakin ingin hapus data ID " + id + "?")) {
+            const form = document.createElement("form");
+            form.method = "post";
+            form.action = "BarangController";
+
+            const aksiInput = document.createElement("input");
+            aksiInput.type = "hidden";
+            aksiInput.name = "aksi";
+            aksiInput.value = "delete";
+
+            const idInput = document.createElement("input");
+            idInput.type = "hidden";
+            idInput.name = "id";
+            idInput.value = id;
+
+            form.appendChild(aksiInput);
+            form.appendChild(idInput);
+
+            document.body.appendChild(form);
+            form.submit();
         }
-        
-        // Validasi form sebelum submit
-        document.getElementById('formBarang').addEventListener('submit', function(event) {
-            const id = document.getElementById('id').value;
-            const namaBarang = document.getElementById('nama_barang').value;
-            
-            if (id.trim() === '') {
-                alert('ID Barang tidak boleh kosong!');
-                event.preventDefault();
-                return false;
-            }
-            
-            if (namaBarang.trim() === '') {
-                alert('Nama Barang tidak boleh kosong!');
-                event.preventDefault();
-                return false;
-            }
-            
-            return true;
-        });
-    </script>
+    }
+</script>
 </body>
 </html>
