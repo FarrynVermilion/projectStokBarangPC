@@ -12,10 +12,8 @@ public class barang {
     private Date tanggal_garansi;
     private String jenis_garansi;
     private String penanggung_jawab;
-    private Date created_at;
 
     // Getter dan Setter
-
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -43,6 +41,7 @@ public class barang {
     public String getPenanggung_jawab() { return penanggung_jawab; }
     public void setPenanggung_jawab(String penanggung_jawab) { this.penanggung_jawab = penanggung_jawab; }
 
-    public Date getCreated_at() { return created_at; }
-    public void setCreated_at(Date created_at) { this.created_at = created_at; }
+    void setCreated_at(Date date) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

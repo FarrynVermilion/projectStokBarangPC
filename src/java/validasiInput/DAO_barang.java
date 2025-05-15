@@ -13,34 +13,38 @@ public class DAO_barang {
     String DELETE = "DELETE FROM barang WHERE id = ?";
     String ALL = "SELECT * FROM barang";
 
-    public void insert(barang object) {
+    public boolean insert(barang object) {
         try {
-            PreparedStatement st = conn.prepareStatement(SELECT);
-            st.setString(1, "%" + object.getId() + "%");
+            PreparedStatement st = conn.prepareStatement("SELECT id FROM barang WHERE id=?");
+            st.setString(1, object.getId());
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 System.out.println("Data sudah ada");
-            } else {
-                st = conn.prepareStatement(INSERT);
-                st.setString(1, object.getId());
-                st.setString(2, object.getNama_barang());
-                st.setDate(3, object.getTanggal_pembelian());
-                st.setInt(4, object.getJumlah());
-                st.setFloat(5, object.getHarga_satuan());
-                st.setString(6, object.getVendor());
-                st.setDate(7, object.getTanggal_garansi());
-                st.setString(8, object.getJenis_garansi());
-                st.setString(9, object.getPenanggung_jawab());
-                st.executeUpdate();
-                System.out.println("Insert sukses");
+                return false;
             }
             st.close();
+
+            st = conn.prepareStatement(INSERT);
+            st.setString(1, object.getId());
+            st.setString(2, object.getNama_barang());
+            st.setDate(3, object.getTanggal_pembelian());
+            st.setInt(4, object.getJumlah());
+            st.setFloat(5, object.getHarga_satuan());
+            st.setString(6, object.getVendor());
+            st.setDate(7, object.getTanggal_garansi());
+            st.setString(8, object.getJenis_garansi());
+            st.setString(9, object.getPenanggung_jawab());
+            st.executeUpdate();
+            st.close();
+            System.out.println("Insert sukses");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
-
-    public void update(barang object) {
+    
+    public boolean update(barang object) {
         try {
             PreparedStatement st = conn.prepareStatement(UPDATE);
             st.setString(1, object.getNama_barang());
@@ -52,23 +56,33 @@ public class DAO_barang {
             st.setString(7, object.getJenis_garansi());
             st.setString(8, object.getPenanggung_jawab());
             st.setString(9, object.getId());
-            st.executeUpdate();
-            System.out.println("Data berhasil diubah");
+            int rows = st.executeUpdate();
             st.close();
+            if (rows > 0) {
+                System.out.println("Data berhasil diubah");
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-    }
+    }   
 
-    public void delete(String id) {
+    public boolean delete(String id) {
         try {
             PreparedStatement st = conn.prepareStatement(DELETE);
             st.setString(1, id);
-            st.executeUpdate();
+            int rows = st.executeUpdate();
             st.close();
-            System.out.println("Hapus sukses");
+            if (rows > 0) {
+                System.out.println("Hapus sukses");
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -99,7 +113,7 @@ public class DAO_barang {
         return list;
     }
 
-    public ArrayList<barang> ALL() {
+    public ArrayList<barang> getAll() {
         ArrayList<barang> list = new ArrayList<>();
         try {
             PreparedStatement st = conn.prepareStatement(ALL);
@@ -115,7 +129,7 @@ public class DAO_barang {
                 objBarang.setTanggal_garansi(rs.getDate("tanggal_garansi"));
                 objBarang.setJenis_garansi(rs.getString("jenis_garansi"));
                 objBarang.setPenanggung_jawab(rs.getString("penanggung_jawab"));
-                objBarang.setCreated_at(rs.getDate("created_at"));
+                // objBarang.setCreated_at(rs.getDate("created_at")); // jika ada kolom created_at
                 list.add(objBarang);
             }
             st.close();
