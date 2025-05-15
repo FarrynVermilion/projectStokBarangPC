@@ -8,6 +8,7 @@
  */
 package controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -74,15 +75,18 @@ public class BarangController extends HttpServlet {
             // Insert ke database
             dao.insert(b);
 
-            // Redirect ke halaman sukses atau tampilkan pesan
-            response.sendRedirect("index.jsp?message=Insert+Success");
+            // Pop Up / Redirect taro sini
+            request.setAttribute("message", "Data berhasil disimpan!");
+            request.setAttribute("status", "success");
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("index.jsp?message=Error+occurred");
+            request.setAttribute("message", "Terjadi kesalahan saat menyimpan data.");
+            request.setAttribute("status", "error");
         }
+        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        dispatcher.forward(request, response);
     }
 
-    // Untuk GET bisa redirect ke form input
+    //get
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
