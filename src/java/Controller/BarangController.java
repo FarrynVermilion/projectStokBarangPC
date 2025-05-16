@@ -40,6 +40,14 @@ public class BarangController extends HttpServlet {
             String tanggal_garansi_str = request.getParameter("tanggal_garansi");
             String jenis_garansi = request.getParameter("jenis_garansi");
             String penanggung_jawab = request.getParameter("penanggung_jawab");
+            String sbmt=request.getParameter("submit");
+            if(sbmt.equals("simpan")){
+            }
+            if(sbmt.equals("ubah")){
+            }
+            if(sbmt.equals("batal")){
+            }
+            
 
             // Parsing tipe data yang diperlukan
             Date tanggal_pembelian = tanggal_pembelian_str != null && !tanggal_pembelian_str.isEmpty()
@@ -56,6 +64,7 @@ public class BarangController extends HttpServlet {
             if (tanggal_pembelian != null) {
                 b.setTanggal_pembelian(new java.sql.Date(tanggal_pembelian.getTime()));
             } else {
+                
                 b.setTanggal_pembelian(null);
             }
 

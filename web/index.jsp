@@ -227,6 +227,15 @@
             <div class="form-group">
                 <button type="submit" class="btn">Simpan Data</button>
             </div>
+            <div class="form-group">
+                <button type="submit" value="simpan" name="submit" class="btn">Simpan Data</button>
+            </div>
+            <div class="form-group">
+                <button type="submit" value="ubah" name="submit" class="btn">Ubah Data</button>
+            </div>
+            <div class="form-group">
+                <button type="submit" value="batal" name="submit" class="btn">Batal</button>
+            </div>
         </form>
     </div>
         <table>
@@ -326,12 +335,6 @@
                             <input type="hidden" value="<%= item.getId() %>" name="id">
                             <td>
                                 <input type="submit" value="select" name="submit">
-                            </td>
-                            <td>
-                                <input type="submit" value="ubah" name="submit">
-                            </td>
-                            <td>
-                                <input type="submit" value="delete" name="submit">
                             </td>
                         </form>
                     </tr>
