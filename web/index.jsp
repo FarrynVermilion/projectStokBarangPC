@@ -127,18 +127,18 @@
         String jumlah="",harga_satuan="",vendor="",tanggal_garansi="";
         String jenis_garansi="",penanggung_jawab="",total="";
         try{
-            String pilihan = request.getParameter("submit");
-            if(!pilihan.equals(null)){
+            if(request.getParameterMap().containsKey("submit")){
+                String pilihan = request.getParameter("submit");
                 if(pilihan.equalsIgnoreCase("select") ){
                     ArrayList<barang> listCari = model.getCari(request.getParameter("id"));
                     for(barang item :listCari){
                         id=item.getId();
                         nama_barang=item.getNama_barang();
-                        tanggal_pembelian=show.format(sql.parse(item.getTanggal_pembelian().toString()));
+                        tanggal_pembelian=sql.format(sql.parse(item.getTanggal_pembelian().toString()));
                         jumlah=String.valueOf(item.getJumlah());
                         harga_satuan=String.valueOf(item.getHarga_satuan());
                         vendor=item.getVendor();
-                        tanggal_garansi=show.format(sql.parse(item.getTanggal_garansi().toString()));;
+                        tanggal_garansi=sql.format(sql.parse(item.getTanggal_garansi().toString()));;
                         jenis_garansi=item.getJenis_garansi();
                         penanggung_jawab=item.getPenanggung_jawab();
 
@@ -146,10 +146,7 @@
                         total=String.valueOf(format.format(item.getHarga_satuan()*(float)item.getJumlah()));
                     }
                 }
-                if(pilihan.equalsIgnoreCase("ubah")){
-
-                }
-                if(pilihan.equalsIgnoreCase("delete")){
+                if(pilihan.equalsIgnoreCase("hapus")){
                     model.delete(request.getParameter("id"));
                 }
             }
@@ -223,18 +220,14 @@
                     <input type="text" id="jenis_garansi" name="jenis_garansi" class="form-control" value="<%= jenis_garansi %>">
                 </div>
             </div>
-            
-            <div class="form-group">
-                <button type="submit" class="btn">Simpan Data</button>
-            </div>
             <div class="form-group">
                 <button type="submit" value="simpan" name="submit" class="btn">Simpan Data</button>
             </div>
             <div class="form-group">
-                <button type="submit" value="ubah" name="submit" class="btn">Ubah Data</button>
+                <button type="submit" value="update" name="submit" class="btn">Ubah Data</button>
             </div>
             <div class="form-group">
-                <button type="submit" value="batal" name="submit" class="btn">Batal</button>
+                <a href="index.jsp">Batal </a>
             </div>
         </form>
     </div>
@@ -263,7 +256,7 @@
                         <form method="POST" action="index.jsp" border="2" >
                             <td>
                                 <%
-                                    out.println(String.valueOf(i));;
+                                    out.println(String.valueOf(i));
                                 %>
                             </td>
                             <td>
@@ -279,8 +272,7 @@
                             <td>
                                 <%
                                     try{
-                                        Date parse = sql.parse(item.getTanggal_pembelian().toString());
-                                        out.println(show.format(parse));
+                                        out.println(show.format(item.getTanggal_pembelian()));
                                     }catch(Exception e){
                                         e.printStackTrace();
                                     }                                    
@@ -304,8 +296,7 @@
                             <td>
                                 <%
                                     try{
-                                        Date parse = sql.parse(item.getTanggal_garansi().toString());
-                                        out.println(show.format(parse));
+                                        out.println(show.format(item.getTanggal_garansi()));
                                     }catch(Exception e){
                                         e.printStackTrace();
                                     }
@@ -335,6 +326,9 @@
                             <input type="hidden" value="<%= item.getId() %>" name="id">
                             <td>
                                 <input type="submit" value="select" name="submit">
+                            </td>
+                            <td>
+                                <input type="submit" value="hapus" name="submit">
                             </td>
                         </form>
                     </tr>

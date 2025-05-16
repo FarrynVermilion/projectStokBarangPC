@@ -23,13 +23,14 @@ import validasiInput.barang;
 @WebServlet(name = "BarangController", urlPatterns = {"/BarangController"})
 public class BarangController extends HttpServlet {
 
-    private final DAO_barang dao = new DAO_barang();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private DAO_barang dao = new DAO_barang();
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            
             // Ambil parameter dari form
             String id = request.getParameter("id");
             String nama_barang = request.getParameter("nama_barang");
@@ -40,54 +41,41 @@ public class BarangController extends HttpServlet {
             String tanggal_garansi_str = request.getParameter("tanggal_garansi");
             String jenis_garansi = request.getParameter("jenis_garansi");
             String penanggung_jawab = request.getParameter("penanggung_jawab");
-            String sbmt=request.getParameter("submit");
-            if(sbmt.equals("simpan")){
-            }
-            if(sbmt.equals("ubah")){
-            }
-            if(sbmt.equals("batal")){
-            }
-            
-
+            System.out.println(tanggal_garansi_str);
             // Parsing tipe data yang diperlukan
-            Date tanggal_pembelian = tanggal_pembelian_str != null && !tanggal_pembelian_str.isEmpty()
-                    ? dateFormat.parse(tanggal_pembelian_str) : null;
-            Date tanggal_garansi = tanggal_garansi_str != null && !tanggal_garansi_str.isEmpty()
-                    ? dateFormat.parse(tanggal_garansi_str) : null;
-            int jumlah = jumlah_str != null && !jumlah_str.isEmpty() ? Integer.parseInt(jumlah_str) : 0;
-            int harga_satuan = harga_satuan_str != null && !harga_satuan_str.isEmpty() ? Integer.parseInt(harga_satuan_str) : 0;
-
+            Date tanggal_pembelian = dateFormat.parse(tanggal_pembelian_str);
+            Date tanggal_garansi = dateFormat.parse(tanggal_garansi_str);
+            int jumlah = Integer.parseInt(jumlah_str);
+            float harga_satuan = Float.parseFloat(harga_satuan_str);
+            
+            
             // Buat objek barang
             barang b = new barang();
             b.setId(id);
             b.setNama_barang(nama_barang);
-            if (tanggal_pembelian != null) {
-                b.setTanggal_pembelian(new java.sql.Date(tanggal_pembelian.getTime()));
-            } else {
-                
-                b.setTanggal_pembelian(null);
-            }
-
-            if (tanggal_garansi != null) {
-                b.setTanggal_garansi(new java.sql.Date(tanggal_garansi.getTime()));
-            } else {
-                b.setTanggal_garansi(null);
-            }
-
+            b.setTanggal_pembelian(tanggal_pembelian);
             b.setJumlah(jumlah);
             b.setHarga_satuan(harga_satuan);
             b.setVendor(vendor);
-
+            b.setTanggal_garansi(tanggal_garansi);
             b.setJenis_garansi(jenis_garansi);
             b.setPenanggung_jawab(penanggung_jawab);
-
-            // Insert ke database
-            dao.insert(b);
+            
+            String sbmt = request.getParameter("submit");
+            if(sbmt.equals("simpan")){
+                // Insert ke database
+                dao.insert(b);
+            }
+            if(sbmt.equals("update")){
+                dao.update(b);
+            }
 
             // Pop Up / Redirect taro sini
             request.setAttribute("message", "Data berhasil disimpan!");
             request.setAttribute("status", "success");
         } catch (Exception e) {
+            System.out.println("error"+e.getMessage());
+            e.printStackTrace();
             request.setAttribute("message", "Terjadi kesalahan saat menyimpan data.");
             request.setAttribute("status", "error");
         }

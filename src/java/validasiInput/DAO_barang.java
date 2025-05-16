@@ -28,11 +28,11 @@ public class DAO_barang {
                 st = conn.prepareStatement(INSERT);
                 st.setString(1, object.getId());
                 st.setString(2, object.getNama_barang());
-                st.setDate(3, object.getTanggal_pembelian());
+                st.setString(3, sql.format(object.getTanggal_pembelian()));
                 st.setInt(4, object.getJumlah());
                 st.setFloat(5, object.getHarga_satuan());
                 st.setString(6, object.getVendor());
-                st.setDate(7, object.getTanggal_garansi());
+                st.setString(7, sql.format(object.getTanggal_garansi()));
                 st.setString(8, object.getJenis_garansi());
                 st.setString(9, object.getPenanggung_jawab());
                 st.executeUpdate();
@@ -40,6 +40,7 @@ public class DAO_barang {
             }
             st.close();
         } catch (Exception e) {
+            System.out.println("Gagal");
             e.printStackTrace();
         }
     }
@@ -48,14 +49,15 @@ public class DAO_barang {
         try {
             PreparedStatement st = conn.prepareStatement(UPDATE);
             st.setString(1, object.getNama_barang());
-            st.setDate(2, object.getTanggal_pembelian());
+            st.setString(2, sql.format(object.getTanggal_pembelian()));
             st.setInt(3, object.getJumlah());
             st.setFloat(4, object.getHarga_satuan());
             st.setString(5, object.getVendor());
-            st.setDate(6, object.getTanggal_garansi());
+            st.setString(6, sql.format(object.getTanggal_garansi()));
             st.setString(7, object.getJenis_garansi());
             st.setString(8, object.getPenanggung_jawab());
             st.setString(9, object.getId());
+            
             st.executeUpdate();
             System.out.println("Data berhasil diubah");
             st.close();

@@ -29,16 +29,17 @@ public class Database {
 //                user = mypanel.getProperty("DBUsername");
 //                pass = mypanel.getProperty("DBPassword");
                 driver = "com.mysql.cj.jdbc.Driver";
-                database="jdbc:mysql://localhost/P2_db_Akademik";
+                database="jdbc:mysql://localhost/jwp";
                 user="Edelweiss";
                 pass="P4nd4_Expre55";
                 
                 Class.forName(driver);
                 conn = DriverManager.getConnection(database,user,pass);
 //                JOptionPane.showMessageDialog(null, "Koneksi berhasil", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Connected");
             }catch(Exception e){
 //                JOptionPane.showMessageDialog(null, "Koneksi tidak berhasil","Pesan", JOptionPane.INFORMATION_MESSAGE);
-                System.out.println("Error\t: "+e.getMessage());
+                System.out.println("Error failed\t: "+e.getMessage());
             }
         }
         return conn;
