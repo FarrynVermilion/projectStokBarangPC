@@ -41,8 +41,7 @@ public class BarangController extends HttpServlet {
             String tanggal_garansi_str = request.getParameter("tanggal_garansi");
             String jenis_garansi = request.getParameter("jenis_garansi");
             String penanggung_jawab = request.getParameter("penanggung_jawab");
-            System.out.println(tanggal_garansi_str);
-            // Parsing tipe data yang diperlukan
+            
             Date tanggal_pembelian = dateFormat.parse(tanggal_pembelian_str);
             Date tanggal_garansi = dateFormat.parse(tanggal_garansi_str);
             int jumlah = Integer.parseInt(jumlah_str);
